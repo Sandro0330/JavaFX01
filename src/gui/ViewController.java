@@ -1,54 +1,69 @@
 package gui;
 
 import java.net.URL;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
-import gui.util.Alerts;
-import gui.util.Constraints;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.util.Callback;
+import model.entidade.Pessoa;
 
 public class ViewController implements Initializable {
-
+	
 	@FXML
-	private TextField txtNum1;
-
+	private ComboBox<Pessoa> comboBoxPessoa;
+	
 	@FXML
-	private TextField txtNum2;
-
+	private Button btnTudo;
+	
+	private ObservableList<Pessoa> obsList;
+	
+	
+	// Mostra todos os cadastros das listas
 	@FXML
-	private Label lblResultado;
-
-	@FXML
-	private Button btnSoma;
-
-	@FXML
-	public void onBtnSomaAction() {	
-		try {
-			
-			Locale.setDefault(Locale.US);
-			double numero1 = Double.parseDouble(txtNum1.getText());
-			double numero2 = Double.parseDouble(txtNum2.getText());
-			double soma = numero1 + numero2;
-			lblResultado.setText(String.format("%.2f", soma));	
+	public void onBtnTudoAction() {
+		for (Pessoa pessoa : comboBoxPessoa.getItems()) {
+			System.out.println(pessoa);
 		}
-		catch (NumberFormatException e) {
-			Alerts.showAlert("Erro", null, e.getMessage(), AlertType.ERROR);
-		}
+	}
+	
+	// Mostrar o cadastro completo
+	@FXML
+	public void onComboBoxPessoaAction() {
+		Pessoa pessoa = comboBoxPessoa.getSelectionModel().getSelectedItem();
+		System.out.println(pessoa);
 	}
 
 	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		Constraints.setTextFieldDouble(txtNum1);
-		Constraints.setTextFieldDouble(txtNum2);
-		Constraints.setTextFieldMaxLength(txtNum1, 12); // limitando a quantidade de números
-		Constraints.setTextFieldMaxLength(txtNum2, 12); // limitando a quantidade de números
+	public void initialize(URL url, ResourceBundle rb) {
+		List<Pessoa> lista = new ArrayList<>();
+		lista.add(new Pessoa(1, "Sandro", "sandro@gmail.com"));
+		lista.add(new Pessoa(2, "Regina", "regina@gmail.com"));
+		lista.add(new Pessoa(3, "Uilson", "uilson@hotmail.com"));
+		lista.add(new Pessoa(4, "Maria", "maria@gmail.com"));
 		
+		obsList = FXCollections.observableArrayList(lista);
+		comboBoxPessoa.setItems(obsList);
+		
+		// Pegar somente o nome da lista não o toString completo
+		Callback<ListView<Pessoa>, ListCell<Pessoa>> factory = lv -> new ListCell<Pessoa>() {
+			@Override
+			protected void updateItem(Pessoa item, boolean vazio) {
+				super.updateItem(item, vazio);
+				setText(vazio ? "" : item.getNome());
+			}
+		};
+		
+		comboBoxPessoa.setCellFactory(factory);
+		comboBoxPessoa.setButtonCell(factory.call(null));
 	}
 
 }
