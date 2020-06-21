@@ -46,6 +46,8 @@ public class ViewController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		Constraints.setTextFieldDouble(txtNum1);
 		Constraints.setTextFieldDouble(txtNum2);
+		Constraints.setTextFieldMaxLength(txtNum1, 12); // limitando a quantidade de números
+		Constraints.setTextFieldMaxLength(txtNum2, 12); // limitando a quantidade de números
 		
 	}
 
